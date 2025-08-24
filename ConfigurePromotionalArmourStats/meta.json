@@ -1,0 +1,24 @@
+{
+  "ID": "com.quinn11235.ConfigurePromotionalArmourSkins",
+  "AssemblyName": "ConfigurePromotionalArmourStats.dll",
+  "Author": [
+    {
+      "Key": "English",
+      "Value": "Quinn11235"
+    }
+  ],
+  "Version": "1.0",
+  "Name": [
+    {
+      "Key": "English",
+      "Value": "Configure Promotional Armour Stats"
+    }
+  ],
+  "Description": [
+    {
+      "Key": "English",
+      "Value": "Configure promotional armor stats and add special abilities. Features: Gold Golem Helmet (Daze Immunity), Gold Golem Body (Expert Heavy Weapons + Crystal SuperCharge), Gold Odin Body (Armor Buff + Radiant Hope), Gold Banshee Helmet (Gunslinger), PR Banshee Helmet (Frenzy), NW Phlegethon Legs (Jump), Viking Armor Set with Daze Immunity (Helmet), Regeneration + Fire Resistance (Body), and Goo Immunity + Jump (Legs). All abilities can be individually configured."
+    }
+  ],
+  "Dependencies": []
+}
