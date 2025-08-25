@@ -4,20 +4,20 @@
   "Author": [
     {
       "Key": "English",
-      "Value": "Quinn11235"
+      "Value": "PP Modding Community"
     }
   ],
-  "Version": "1.0",
+  "Version": "2.0",
   "Name": [
     {
       "Key": "English",
-      "Value": "Configure Promotional Armour Stats"
+      "Value": "Configure Promotional Armor Stats"
     }
   ],
   "Description": [
     {
       "Key": "English",
-      "Value": "Configure promotional armor stats and add special abilities. Features: Gold Golem Helmet (Daze Immunity), Gold Golem Body (Expert Heavy Weapons + Crystal SuperCharge), Gold Odin Body (Armor Buff + Radiant Hope), Gold Banshee Helmet (Gunslinger), PR Banshee Helmet (Frenzy), NW Phlegethon Legs (Jump), Viking Armor Set with Daze Immunity (Helmet), Regeneration + Fire Resistance (Body), and Goo Immunity + Jump (Legs). All abilities can be individually configured."
+      "Value": "Configure statistics for promotional armor pieces: Gold Odin (Assault), Gold Golem (Heavy), Gold Banshee (Sniper), Phoenix Rising Banshee, New World Phlegethon, and Viking Berserker sets. Allows modification of armor rating, speed, perception, stealth, accuracy, and weight values for each individual piece through mod configuration settings."
     }
   ],
   "Dependencies": []
