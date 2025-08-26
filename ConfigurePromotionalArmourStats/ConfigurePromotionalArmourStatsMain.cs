@@ -394,7 +394,7 @@ namespace ConfigurePromotionalArmourStats
 
 
         /// <summary>
-        /// Apply additional abilities to armor pieces based on config - matches SuperCheatsModPlus approach
+        /// Apply additional abilities to armor pieces based on config
         /// </summary>
         private void ApplyArmorAbilities()
         {
@@ -403,346 +403,294 @@ namespace ConfigurePromotionalArmourStats
             // Remove existing abilities first to ensure clean state
             RemoveAllAddedAbilities();
             
-            // Create configurable abilities that are working in the UI
-            if (Config.GoldGolemHelmetArmorBuff)
-            {
-                CreateArmorBuffAbility();
-            }
+            // Create configurable custom abilities
+            CreateGunslingerAbility();
             
-            if (Config.GoldBansheeHelmetGunslinger)
-            {
-                CreateGunslingerAbility();
-            }
-            
-            // Assign abilities to armor pieces using existing game abilities when possible
+            // Assign abilities to armor pieces using existing game abilities
             AssignAbilitiesToArmor(repo);
         }
 
 
         /// <summary>
-        /// Create and assign abilities to armor pieces based on config - Updated for ability moves and Viking armor
+        /// Create and assign abilities to armor pieces based on config - Updated per user requirements
         /// </summary>
         private void AssignAbilitiesToArmor(DefRepository repo)
         {
-            // Gold Golem Helmet - Daze Immunity + Armor Buff
-            var goldGolemHelmetAbilities = new List<AbilityDef>();
-            
-            if (Config.GoldGolemHelmetDazeImmunity)
-            {
-                var dazeImmunityAbility = repo.GetAllDefs<AbilityDef>().FirstOrDefault(a => a.name.Equals("StunStatusImmunity_AbilityDef"));
-                if (dazeImmunityAbility != null)
-                {
-                    goldGolemHelmetAbilities.Add(dazeImmunityAbility);
-                }
-            }
-            
-            // Gold Golem Helmet - Armor Buff (moved from Gold Golem Body)
-            if (Config.GoldGolemHelmetArmorBuff)
-            {
-                var armorBuffAbility = repo.GetAllDefs<ApplyEffectAbilityDef>().FirstOrDefault(a => a.name.Equals("BonusArmor2_AbilityDef"));
-                if (armorBuffAbility != null)
-                {
-                    goldGolemHelmetAbilities.Add(armorBuffAbility);
-                }
-            }
-            
-            GoldGolemHelmetItem.Abilities = goldGolemHelmetAbilities.ToArray();
-            
-            var goldGolemBodyAbilities = new List<AbilityDef>();
-            
-            // Gold Golem Body - Jetpack (standard Heavy armor jetpack)
-            var jetpackAbility = repo.GetAllDefs<JetJumpAbilityDef>().FirstOrDefault(a => a.name.Equals("JetJump_AbilityDef"));
-            if (jetpackAbility != null)
-            {
-                goldGolemBodyAbilities.Add(jetpackAbility);
-            }
-            
-            // Gold Golem Body - Expert Heavy Weapons (use existing game ability)
-            if (Config.GoldGolemBodyExpertHeavyWeapons)
-            {
-                var expertHeavyWeaponsAbility = repo.GetAllDefs<PassiveModifierAbilityDef>().FirstOrDefault(a => a.name.Equals("ExpertHeavyWeapons_AbilityDef"));
-                if (expertHeavyWeaponsAbility != null)
-                {
-                    goldGolemBodyAbilities.Add(expertHeavyWeaponsAbility);
-                }
-            }
-            
-            // Gold Golem Body - Crystal SuperCharge (use existing game ability)
-            if (Config.GoldGolemBodyCrystalSuperCharge)
-            {
-                var crystalSuperChargeAbility = repo.GetAllDefs<ApplyStatusAbilityDef>().FirstOrDefault(a => a.name.Equals("CrystalStacks_DamageAmplification_AbilityDef"));
-                if (crystalSuperChargeAbility != null)
-                {
-                    goldGolemBodyAbilities.Add(crystalSuperChargeAbility);
-                }
-            }
-            
-            GoldGolemBodyItem.Abilities = goldGolemBodyAbilities.ToArray();
-
-            // Gold Odin Helmet - Frenzy (moved from PR Banshee Helmet)
-            if (Config.GoldOdinHelmetFrenzy)
+            // NEON WHITE HELMET: Instill Frenzy, Virus Resistant, +5 Will Points
+            var nwHelmetAbilities = new List<AbilityDef>();
+            if (Config.NWHelmetInstillFrenzy)
             {
                 var frenzyAbility = repo.GetAllDefs<AbilityDef>().FirstOrDefault(a => a.name.Equals("Priest_InstilFrenzy_AbilityDef"));
                 if (frenzyAbility != null)
                 {
-                    GoldOdinHelmetItem.Abilities = new AbilityDef[] { frenzyAbility };
-                }
-                else
-                {
-                    GoldOdinHelmetItem.Abilities = new AbilityDef[0];
+                    nwHelmetAbilities.Add(frenzyAbility);
                 }
             }
-            else
+            if (Config.NWHelmetVirusResistant)
             {
-                GoldOdinHelmetItem.Abilities = new AbilityDef[0];
+                var virusResistantAbility = repo.GetAllDefs<AbilityDef>().FirstOrDefault(a => a.name.Equals("VirusStatusImmunity_AbilityDef"));
+                if (virusResistantAbility != null)
+                {
+                    nwHelmetAbilities.Add(virusResistantAbility);
+                }
             }
-
-            // Gold Odin Body - Radiant Hope
-            if (Config.GoldOdinBodyRadiantHope)
+            NWPhlegethonHelmetItem.Abilities = nwHelmetAbilities.ToArray();
+            
+            // NEON WHITE BODY ARMOR: Radiant Hope
+            if (Config.NWBodyRadiantHope)
             {
                 var radiantHopeAbility = repo.GetAllDefs<AbilityDef>().FirstOrDefault(a => a.name.Equals("RadiantHope_AbilityDef"));
                 if (radiantHopeAbility != null)
                 {
-                    GoldOdinBodyItem.Abilities = new AbilityDef[] { radiantHopeAbility };
+                    NWPhlegethonBodyItem.Abilities = new AbilityDef[] { radiantHopeAbility };
                 }
                 else
                 {
-                    GoldOdinBodyItem.Abilities = new AbilityDef[0];
+                    NWPhlegethonBodyItem.Abilities = new AbilityDef[0];
                 }
             }
             else
             {
-                GoldOdinBodyItem.Abilities = new AbilityDef[0];
+                NWPhlegethonBodyItem.Abilities = new AbilityDef[0];
             }
-
-            // Gold Banshee Helmet - Gunslinger (use our configurable custom ability)
-            if (Config.GoldBansheeHelmetGunslinger)
+            
+            // NEON WHITE LEGS: Immune to Goo
+            if (Config.NWLegsGooImmunity)
             {
-                var gunslingerAbility = repo.GetAllDefs<ShootAbilityDef>().FirstOrDefault(a => a.name.Equals("Custom_Gunslinger_AbilityDef"));
-                if (gunslingerAbility != null)
+                var gooImmunityAbility = repo.GetAllDefs<AbilityDef>().FirstOrDefault(a => a.name.Equals("GooImmunity_AbilityDef"));
+                if (gooImmunityAbility != null)
                 {
-                    GoldBansheeHelmetItem.Abilities = new AbilityDef[] { gunslingerAbility };
+                    NWPhlegethonLegItem.Abilities = new AbilityDef[] { gooImmunityAbility };
                 }
                 else
                 {
-                    GoldBansheeHelmetItem.Abilities = new AbilityDef[0];
+                    NWPhlegethonLegItem.Abilities = new AbilityDef[0];
                 }
             }
             else
             {
-                GoldBansheeHelmetItem.Abilities = new AbilityDef[0];
+                NWPhlegethonLegItem.Abilities = new AbilityDef[0];
             }
-
-            // PR Banshee Helmet - Silent Echo + Night Vision (bionic abilities)
-            if (PRBansheeHelmetItem != null)
-            {
-                var prBansheeHelmetAbilities = new List<AbilityDef>();
-                
-                if (Config.PRBansheeHelmetSilentEcho)
-                {
-                    var silentEchoAbility = repo.GetAllDefs<AbilityDef>().FirstOrDefault(a => a.name.Equals("SilentEcho_AbilityDef"));
-                    if (silentEchoAbility != null)
-                    {
-                        prBansheeHelmetAbilities.Add(silentEchoAbility);
-                    }
-                }
-                
-                if (Config.PRBansheeHelmetNightVision)
-                {
-                    var nightVisionAbility = repo.GetAllDefs<AbilityDef>().FirstOrDefault(a => a.name.Equals("EnhancedVision_AbilityDef"));
-                    if (nightVisionAbility != null)
-                    {
-                        prBansheeHelmetAbilities.Add(nightVisionAbility);
-                    }
-                }
-                
-                PRBansheeHelmetItem.Abilities = prBansheeHelmetAbilities.ToArray();
-            }
-
-            // NW Phlegethon Helmet - Mind Control Immunity
-            if (Config.NWPhlegethonHelmetMindControlImmunity)
+            
+            // GOLD ODIN HELMET: Mind Control Immunity, Poison Resistant
+            var goldOdinHelmetAbilities = new List<AbilityDef>();
+            if (Config.GoldOdinHelmetMindControlImmunity)
             {
                 var mindControlImmunityAbility = repo.GetAllDefs<AbilityDef>().FirstOrDefault(a => a.name.Equals("MindControlStatusImmunity_AbilityDef"));
                 if (mindControlImmunityAbility != null)
                 {
-                    NWPhlegethonHelmetItem.Abilities = new AbilityDef[] { mindControlImmunityAbility };
+                    goldOdinHelmetAbilities.Add(mindControlImmunityAbility);
+                }
+            }
+            if (Config.GoldOdinHelmetPoisonResistant)
+            {
+                var poisonResistantAbility = repo.GetAllDefs<AbilityDef>().FirstOrDefault(a => a.name.Equals("PoisonStatusImmunity_AbilityDef"));
+                if (poisonResistantAbility != null)
+                {
+                    goldOdinHelmetAbilities.Add(poisonResistantAbility);
+                }
+            }
+            GoldOdinHelmetItem.Abilities = goldOdinHelmetAbilities.ToArray();
+            
+            // GOLD ODIN BODY ARMOR: Combat Matrix, Fire Resistant, +5 Strength
+            var goldOdinBodyAbilities = new List<AbilityDef>();
+            if (Config.GoldOdinBodyCombatMatrix)
+            {
+                var combatMatrixAbility = repo.GetAllDefs<AbilityDef>().FirstOrDefault(a => a.name.Equals("Vengeance_AbilityDef"));
+                if (combatMatrixAbility != null)
+                {
+                    goldOdinBodyAbilities.Add(combatMatrixAbility);
+                }
+            }
+            if (Config.GoldOdinBodyFireResistant)
+            {
+                var fireResistantAbility = repo.GetAllDefs<AbilityDef>().FirstOrDefault(a => a.name.Equals("FireStatusImmunity_AbilityDef"));
+                if (fireResistantAbility != null)
+                {
+                    goldOdinBodyAbilities.Add(fireResistantAbility);
+                }
+            }
+            GoldOdinBodyItem.Abilities = goldOdinBodyAbilities.ToArray();
+            
+            // GOLD ODIN LEGS: Can jump up one elevation, Shadowstep
+            var goldOdinLegsAbilities = new List<AbilityDef>();
+            if (Config.GoldOdinLegsJumpElevation)
+            {
+                var jumpAbility = repo.GetAllDefs<AddNavAreasAbilityDef>().FirstOrDefault(a => a.name.Equals("Humanoid_HighJump_AbilityDef"));
+                if (jumpAbility != null)
+                {
+                    goldOdinLegsAbilities.Add(jumpAbility);
+                }
+            }
+            if (Config.GoldOdinLegsShadowstep)
+            {
+                var shadowstepAbility = repo.GetAllDefs<AbilityDef>().FirstOrDefault(a => a.name.Equals("ShadowStep_AbilityDef"));
+                if (shadowstepAbility != null)
+                {
+                    goldOdinLegsAbilities.Add(shadowstepAbility);
+                }
+            }
+            GoldOdinLegItem.Abilities = goldOdinLegsAbilities.ToArray();
+            
+            // GOLD BANSHEE HELMET: Night Vision, Silent Echo, +4 Will Points
+            var goldBansheeHelmetAbilities = new List<AbilityDef>();
+            if (Config.GoldBansheeHelmetNightVision)
+            {
+                var nightVisionAbility = repo.GetAllDefs<AbilityDef>().FirstOrDefault(a => a.name.Equals("EnhancedVision_AbilityDef"));
+                if (nightVisionAbility != null)
+                {
+                    goldBansheeHelmetAbilities.Add(nightVisionAbility);
+                }
+            }
+            if (Config.GoldBansheeHelmetSilentEcho)
+            {
+                var silentEchoAbility = repo.GetAllDefs<AbilityDef>().FirstOrDefault(a => a.name.Equals("SilentEcho_AbilityDef"));
+                if (silentEchoAbility != null)
+                {
+                    goldBansheeHelmetAbilities.Add(silentEchoAbility);
+                }
+            }
+            GoldBansheeHelmetItem.Abilities = goldBansheeHelmetAbilities.ToArray();
+            
+            // PR BANSHEE HELMET: Gunslinger (custom configurable), +4 Will Points
+            if (Config.PRBansheeHelmetGunslinger)
+            {
+                var gunslingerAbility = repo.GetAllDefs<ShootAbilityDef>().FirstOrDefault(a => a.name.Equals("Custom_Gunslinger_AbilityDef"));
+                if (gunslingerAbility != null)
+                {
+                    PRBansheeHelmetItem.Abilities = new AbilityDef[] { gunslingerAbility };
                 }
                 else
                 {
-                    NWPhlegethonHelmetItem.Abilities = new AbilityDef[0];
+                    PRBansheeHelmetItem.Abilities = new AbilityDef[0];
                 }
             }
             else
             {
-                NWPhlegethonHelmetItem.Abilities = new AbilityDef[0];
+                PRBansheeHelmetItem.Abilities = new AbilityDef[0];
             }
-
-            // NW Phlegethon Legs - Jump (moved from Gold Odin) + Shadowstep
-            if (NWPhlegethonLegItem != null)
+            
+            // PR BANSHEE LEGS: Rocket Leap, Landing Shock Absorption
+            var prBansheeLegsAbilities = new List<AbilityDef>();
+            if (Config.PRBansheeLegsRocketLeap)
             {
-                var nwPhlegethonLegAbilities = new List<AbilityDef>();
-                
-                if (Config.NWPhlegethonLegJump)
+                var rocketLeapAbility = repo.GetAllDefs<AbilityDef>().FirstOrDefault(a => a.name.Equals("PropellerJump_AbilityDef"));
+                if (rocketLeapAbility != null)
                 {
-                    var jumpAbility = repo.GetAllDefs<JetJumpAbilityDef>().FirstOrDefault(a => a.name.Equals("Exo_Leap_AbilityDef"));
-                    if (jumpAbility != null)
-                    {
-                        nwPhlegethonLegAbilities.Add(jumpAbility);
-                    }
+                    prBansheeLegsAbilities.Add(rocketLeapAbility);
                 }
-                
-                if (Config.NWPhlegethonLegsShadowstep)
-                {
-                    var shadowstepAbility = repo.GetAllDefs<AbilityDef>().FirstOrDefault(a => a.name.Equals("ShadowStep_AbilityDef"));
-                    if (shadowstepAbility != null)
-                    {
-                        nwPhlegethonLegAbilities.Add(shadowstepAbility);
-                    }
-                }
-                
-                NWPhlegethonLegItem.Abilities = nwPhlegethonLegAbilities.ToArray();
             }
-
-            // Viking Helmet - Daze Immunity
-            if (VikingHelmetItem != null && Config.VikingHelmetDazeImmunity)
+            if (Config.PRBansheeLegsShockAbsorption)
             {
-                var dazeImmunityAbility = repo.GetAllDefs<AbilityDef>().FirstOrDefault(a => a.name.Equals("StunStatusImmunity_AbilityDef"));
-                if (dazeImmunityAbility != null)
+                var shockAbsorptionAbility = repo.GetAllDefs<AbilityDef>().FirstOrDefault(a => a.name.Equals("NoFallDamage_AbilityDef"));
+                if (shockAbsorptionAbility != null)
                 {
-                    VikingHelmetItem.Abilities = new AbilityDef[] { dazeImmunityAbility };
+                    prBansheeLegsAbilities.Add(shockAbsorptionAbility);
+                }
+            }
+            PRBansheeLegItem.Abilities = prBansheeLegsAbilities.ToArray();
+            
+            // GOLD GOLEM BODY ARMOR: Heavy Body Armor Jet Jump, Heavy Lifter, Demolition State, Heavy Weapons Expert
+            var goldGolemBodyAbilities = new List<AbilityDef>();
+            if (Config.GoldGolemBodyJetJump)
+            {
+                var jetpackAbility = repo.GetAllDefs<JetJumpAbilityDef>().FirstOrDefault(a => a.name.Equals("JetJump_AbilityDef"));
+                if (jetpackAbility != null)
+                {
+                    goldGolemBodyAbilities.Add(jetpackAbility);
+                }
+            }
+            if (Config.GoldGolemBodyHeavyLifter)
+            {
+                var heavyLifterAbility = repo.GetAllDefs<PassiveModifierAbilityDef>().FirstOrDefault(a => a.name.Equals("WeightCapacityIncrease_AbilityDef"));
+                if (heavyLifterAbility != null)
+                {
+                    goldGolemBodyAbilities.Add(heavyLifterAbility);
+                }
+            }
+            if (Config.GoldGolemBodyDemolitionState)
+            {
+                var demolitionStateAbility = repo.GetAllDefs<PassiveModifierAbilityDef>().FirstOrDefault(a => a.name.Equals("Juggernaut_AbilityDef"));
+                if (demolitionStateAbility != null)
+                {
+                    goldGolemBodyAbilities.Add(demolitionStateAbility);
+                }
+            }
+            if (Config.GoldGolemBodyHeavyWeaponsExpert)
+            {
+                var heavyWeaponsExpertAbility = repo.GetAllDefs<PassiveModifierAbilityDef>().FirstOrDefault(a => a.name.Equals("ExpertHeavyWeapons_AbilityDef"));
+                if (heavyWeaponsExpertAbility != null)
+                {
+                    goldGolemBodyAbilities.Add(heavyWeaponsExpertAbility);
+                }
+            }
+            GoldGolemBodyItem.Abilities = goldGolemBodyAbilities.ToArray();
+            
+            // GOLD GOLEM LEGS: Landing Shock Absorption
+            if (Config.GoldGolemLegsShockAbsorption)
+            {
+                var shockAbsorptionAbility = repo.GetAllDefs<AbilityDef>().FirstOrDefault(a => a.name.Equals("NoFallDamage_AbilityDef"));
+                if (shockAbsorptionAbility != null)
+                {
+                    GoldGolemLegItem.Abilities = new AbilityDef[] { shockAbsorptionAbility };
                 }
                 else
                 {
-                    VikingHelmetItem.Abilities = new AbilityDef[0];
+                    GoldGolemLegItem.Abilities = new AbilityDef[0];
                 }
             }
-            else if (VikingHelmetItem != null)
+            else
             {
+                GoldGolemLegItem.Abilities = new AbilityDef[0];
+            }
+            
+            // VIKING BODY ARMOR: Regeneration, Fire Resistance, Living Crystal Supercharge
+            var vikingBodyAbilities = new List<AbilityDef>();
+            if (Config.VikingBodyRegeneration)
+            {
+                var regenerationAbility = repo.GetAllDefs<ApplyStatusAbilityDef>().FirstOrDefault(a => a.name.Equals("Regeneration_Torso_Passive_AbilityDef"));
+                if (regenerationAbility != null)
+                {
+                    vikingBodyAbilities.Add(regenerationAbility);
+                }
+            }
+            if (Config.VikingBodyFireResistance)
+            {
+                var fireResistanceAbility = repo.GetAllDefs<AbilityDef>().FirstOrDefault(a => a.name.Equals("FireStatusImmunity_AbilityDef"));
+                if (fireResistanceAbility != null)
+                {
+                    vikingBodyAbilities.Add(fireResistanceAbility);
+                }
+            }
+            if (Config.VikingBodyCrystalSupercharge)
+            {
+                var crystalSuperchargeAbility = repo.GetAllDefs<ApplyStatusAbilityDef>().FirstOrDefault(a => a.name.Equals("CrystalStacks_DamageAmplification_AbilityDef"));
+                if (crystalSuperchargeAbility != null)
+                {
+                    vikingBodyAbilities.Add(crystalSuperchargeAbility);
+                }
+            }
+            VikingBodyItem.Abilities = vikingBodyAbilities.ToArray();
+            
+            // Clear abilities for items that should have no abilities
+            if (GoldGolemHelmetItem != null)
+                GoldGolemHelmetItem.Abilities = new AbilityDef[0];
+            if (GoldBansheeBodyItem != null)
+                GoldBansheeBodyItem.Abilities = new AbilityDef[0];
+            if (GoldBansheeLegItem != null)
+                GoldBansheeLegItem.Abilities = new AbilityDef[0];
+            if (PRBansheeBodyItem != null)
+                PRBansheeBodyItem.Abilities = new AbilityDef[0];
+            if (VikingHelmetItem != null)
                 VikingHelmetItem.Abilities = new AbilityDef[0];
-            }
-
-            // Viking Body - Regenerate + Fire Resistance
-            if (VikingBodyItem != null)
-            {
-                var vikingBodyAbilities = new List<AbilityDef>();
-                
-                if (Config.VikingBodyRegenerate)
-                {
-                    var regenerateAbility = repo.GetAllDefs<ApplyStatusAbilityDef>().FirstOrDefault(a => a.name.Equals("Regeneration_Torso_Passive_AbilityDef"));
-                    if (regenerateAbility != null)
-                    {
-                        vikingBodyAbilities.Add(regenerateAbility);
-                    }
-                }
-                
-                if (Config.VikingBodyFireResistance)
-                {
-                    var fireResistanceAbility = repo.GetAllDefs<AbilityDef>().FirstOrDefault(a => a.name.Equals("FireStatusImmunity_AbilityDef"));
-                    if (fireResistanceAbility != null)
-                    {
-                        vikingBodyAbilities.Add(fireResistanceAbility);
-                    }
-                }
-                
-                VikingBodyItem.Abilities = vikingBodyAbilities.ToArray();
-            }
-
-            // Viking Legs - Goo Immunity + Jump
             if (VikingLegItem != null)
-            {
-                var vikingLegAbilities = new List<AbilityDef>();
-                
-                if (Config.VikingLegsGooImmunity)
-                {
-                    var gooImmunityAbility = repo.GetAllDefs<AbilityDef>().FirstOrDefault(a => a.name.Equals("GooImmunity_AbilityDef"));
-                    if (gooImmunityAbility != null)
-                    {
-                        vikingLegAbilities.Add(gooImmunityAbility);
-                    }
-                }
-                
-                if (Config.VikingLegsJump)
-                {
-                    var jumpAbility = repo.GetAllDefs<AddNavAreasAbilityDef>().FirstOrDefault(a => a.name.Equals("Humanoid_HighJump_AbilityDef"));
-                    if (jumpAbility != null)
-                    {
-                        vikingLegAbilities.Add(jumpAbility);
-                    }
-                }
-                
-                VikingLegItem.Abilities = vikingLegAbilities.ToArray();
-            }
-
+                VikingLegItem.Abilities = new AbilityDef[0];
+            if (VikingRightLegItem != null)
+                VikingRightLegItem.Abilities = new AbilityDef[0];
+            if (VikingMainLegsItem != null)
+                VikingMainLegsItem.Abilities = new AbilityDef[0];
         }
 
-        /// <summary>
-        /// Create Armor Buff ability - exact copy from SuperCheatsModPlus
-        /// </summary>
-        private void CreateArmorBuffAbility()
-        {
-            DefRepository repo = GameUtl.GameComponent<DefRepository>();
-            
-            string skillName = "BonusArmor2_AbilityDef";
-            ApplyEffectAbilityDef source = repo.GetAllDefs<ApplyEffectAbilityDef>().FirstOrDefault(p => p.name.Equals("Acheron_RestorePandoranArmor_AbilityDef"));
-            ItemSlotStatsModifyStatusDef sourceStatus = repo.GetAllDefs<ItemSlotStatsModifyStatusDef>().FirstOrDefault(p => p.name.Equals("E_Status [Acheron_RestorePandoranArmor_AbilityDef]"));
-            
-            if (source == null || sourceStatus == null) return;
-            
-            ApplyEffectAbilityDef addarmour = Helper.CreateDefFromClone(
-                source,
-                "251E62C2-F652-481E-B043-A2B1D6525B75",
-                skillName);
-                
-            if (addarmour == null) return;
-                
-            addarmour.ViewElementDef = Helper.CreateDefFromClone(
-                source.ViewElementDef,
-               "8E49AFB8-E450-49A2-A732-9231EE8CDBA2",
-               skillName);
-            addarmour.CharacterProgressionData = Helper.CreateDefFromClone(
-                source.CharacterProgressionData,
-               "3DE5F496-7515-4975-AE3C-8E68AE35DF0C",
-               skillName);
-            addarmour.EffectDef = Helper.CreateDefFromClone(
-                source.EffectDef,
-               "E31F7344-8F19-4AAE-8FE7-141865E34760",
-               "E_Effect [BonusArmor2_AbilityDef]");
-            
-            StatusEffectDef addarmourEffect = (StatusEffectDef)addarmour.EffectDef;
-
-            addarmourEffect.StatusDef = Helper.CreateDefFromClone(
-                sourceStatus,
-               "5262FA8D-5F25-44C2-A50F-3B32F39CC978",
-               "E_Status [BonusArmor2_AbilityDef]");
-
-            addarmour.CharacterProgressionData = null;
-            ItemSlotStatsModifyStatusDef addarmourStatus = (ItemSlotStatsModifyStatusDef)addarmourEffect.StatusDef;
-
-            addarmour.TargetingDataDef.Origin.TargetTags = new GameTagsList
-            {
-                repo.GetAllDefs<GameTagDef>().FirstOrDefault(p => p.name.Equals("Human_TagDef"))
-            };
-
-            addarmourStatus.StatsModifications[0].Type = ItemSlotStatsModifyStatusDef.StatType.Armour;
-            addarmourStatus.StatsModifications[0].ModificationType = StatModificationType.Add;
-            addarmourStatus.StatsModifications[0].Value = Config.GoldGolemHelmetArmorBuffStrength;
-
-            addarmour.ViewElementDef.DisplayName1 = new LocalizedTextBind("Armor Buff", true);
-            addarmour.ViewElementDef.Description = new LocalizedTextBind($"Add +{Config.GoldGolemHelmetArmorBuffStrength} armor to allies for the duration of the mission", true);
-            addarmour.UsesPerTurn = 1;
-            addarmour.ActionPointCost = Config.GoldGolemHelmetArmorBuffAPCost / 4.0f; // Convert to fractional AP
-            addarmour.WillPointCost = Config.GoldGolemHelmetArmorBuffWPCost;
-
-            // Add to animation definitions exactly like SuperCheatsModPlus
-            foreach (TacActorSimpleAbilityAnimActionDef animActionDef in repo.GetAllDefs<TacActorSimpleAbilityAnimActionDef>().Where(aad => aad.name.Contains("Soldier_Utka_AnimActionsDef")))
-            {
-                if (animActionDef.AbilityDefs != null && !animActionDef.AbilityDefs.Contains(addarmour))
-                {
-                    animActionDef.AbilityDefs = animActionDef.AbilityDefs.Append(addarmour).ToArray();
-                }
-            }
-        }
-        
         /// <summary>
         /// Create configurable Gunslinger ability
         /// </summary>
@@ -768,11 +716,11 @@ namespace ConfigurePromotionalArmourStats
                 skillName);
                 
             // Configure costs and effects from config
-            gunslingerAbility.ActionPointCost = Config.GoldBansheeHelmetGunslingerAPCost / 4.0f; // Convert to fractional AP
-            gunslingerAbility.WillPointCost = Config.GoldBansheeHelmetGunslingerWPCost;
+            gunslingerAbility.ActionPointCost = 0; // Free action
+            gunslingerAbility.WillPointCost = 0; // No will cost
             
             gunslingerAbility.ViewElementDef.DisplayName1 = new LocalizedTextBind("Gunslinger", true);
-            gunslingerAbility.ViewElementDef.Description = new LocalizedTextBind($"Gain {Config.GoldBansheeHelmetGunslingerShots} additional shot(s) this turn", true);
+            gunslingerAbility.ViewElementDef.Description = new LocalizedTextBind("Gain additional shots this turn", true);
             
             // Add to animation definitions for proper animations
             foreach (TacActorSimpleAbilityAnimActionDef animActionDef in repo.GetAllDefs<TacActorSimpleAbilityAnimActionDef>().Where(aad => aad.name.Contains("Soldier_Utka_AnimActionsDef")))

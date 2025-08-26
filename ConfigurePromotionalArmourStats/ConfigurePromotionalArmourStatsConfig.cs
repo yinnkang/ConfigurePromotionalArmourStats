@@ -173,65 +173,87 @@ namespace ConfigurePromotionalArmourStats
         public float NWPhlegethonLegAccuracy = 2f;
         public int NWPhlegethonLegWeight = 2;
 
-        // Additional Armor Abilities (for NewAbilitiesforGoldArmor mod compatibility)
+        // Additional Armor Abilities - Updated Configuration
         
-        /// Gold Golem Body - Expert Heavy Weapons Ability (passive)
-        [ConfigField(text: "GoldGolem Body Expert Heavy Weapons")]
-        public bool GoldGolemBodyExpertHeavyWeapons = true;
-
-        /// Gold Banshee Helmet - Gunslinger Ability
-        [ConfigField(text: "GoldBanshee Helmet Gunslinger")]
-        public bool GoldBansheeHelmetGunslinger = true;
-        [ConfigField(text: "GoldBanshee Helmet Gunslinger Extra Shots")]
-        public int GoldBansheeHelmetGunslingerShots = 1;
-        [ConfigField(text: "GoldBanshee Helmet Gunslinger AP Cost")]
-        public int GoldBansheeHelmetGunslingerAPCost = 0;
-        [ConfigField(text: "GoldBanshee Helmet Gunslinger WP Cost")]
-        public int GoldBansheeHelmetGunslingerWPCost = 5;
-
-        /// PR Banshee Helmet - Silent Echo (Echo Head bionic ability)
-        [ConfigField(text: "PRBanshee Helmet Silent Echo")]
-        public bool PRBansheeHelmetSilentEcho = true;
+        // Neon White Helmet Abilities
+        [ConfigField(text: "Neon White Helmet Instill Frenzy")]
+        public bool NWHelmetInstillFrenzy = true;
+        [ConfigField(text: "Neon White Helmet Virus Resistant")]
+        public bool NWHelmetVirusResistant = true;
+        [ConfigField(text: "Neon White Helmet Will Points Bonus")]
+        public int NWHelmetWillPointsBonus = 5;
         
-        /// PR Banshee Helmet - Night Vision (Enhanced Vision bionic ability)
-        [ConfigField(text: "PRBanshee Helmet Night Vision")]
-        public bool PRBansheeHelmetNightVision = true;
-
-        /// Gold Odin Helmet - Frenzy Ability (moved from PR Banshee Helmet)
-        [ConfigField(text: "GoldOdin Helmet Frenzy")]
-        public bool GoldOdinHelmetFrenzy = true;
+        // Neon White Body Armor Abilities
+        [ConfigField(text: "Neon White Body Radiant Hope")]
+        public bool NWBodyRadiantHope = true;
         
-        /// Gold Odin Body - Radiant Hope Passive
-        [ConfigField(text: "GoldOdin Body Radiant Hope")]
-        public bool GoldOdinBodyRadiantHope = true;
-
-        /// NW Phlegethon Legs - Jump Ability (moved from Gold Odin)
-        [ConfigField(text: "NWPhlegethon Legs Jump")]
-        public bool NWPhlegethonLegJump = true;
+        // Neon White Legs Abilities
+        [ConfigField(text: "Neon White Legs Immune to Goo")]
+        public bool NWLegsGooImmunity = true;
         
-        /// NW Phlegethon Legs - Shadowstep (Mirage Legs bionic ability)
-        [ConfigField(text: "NWPhlegethon Legs Shadowstep")]
-        public bool NWPhlegethonLegsShadowstep = true;
-
-        /// Gold Golem Helmet - Daze Immunity
-        [ConfigField(text: "GoldGolem Helmet Daze Immunity")]
-        public bool GoldGolemHelmetDazeImmunity = true;
+        // Gold Odin Helmet Abilities
+        [ConfigField(text: "Gold Odin Helmet Mind Control Immunity")]
+        public bool GoldOdinHelmetMindControlImmunity = true;
+        [ConfigField(text: "Gold Odin Helmet Poison Resistant")]
+        public bool GoldOdinHelmetPoisonResistant = true;
         
-        /// Gold Golem Helmet - Armor Buff Ability (moved from Gold Golem Body)
-        [ConfigField(text: "GoldGolem Helmet Armor Buff")]
-        public bool GoldGolemHelmetArmorBuff = true;
-        [ConfigField(text: "GoldGolem Helmet Armor Buff Strength")]
-        public float GoldGolemHelmetArmorBuffStrength = 10f;
-        [ConfigField(text: "GoldGolem Helmet Armor Buff AP Cost")]
-        public int GoldGolemHelmetArmorBuffAPCost = 1;
-        [ConfigField(text: "GoldGolem Helmet Armor Buff WP Cost")]
-        public int GoldGolemHelmetArmorBuffWPCost = 4;
+        // Gold Odin Body Armor Abilities
+        [ConfigField(text: "Gold Odin Body Combat Matrix")]
+        public bool GoldOdinBodyCombatMatrix = true;
+        [ConfigField(text: "Gold Odin Body Fire Resistant")]
+        public bool GoldOdinBodyFireResistant = true;
+        [ConfigField(text: "Gold Odin Body Strength Bonus")]
+        public int GoldOdinBodyStrengthBonus = 5;
         
-        /// Gold Golem Body - Crystal SuperCharge (replaces shred resistance)
-        [ConfigField(text: "GoldGolem Body Crystal SuperCharge")]
-        public bool GoldGolemBodyCrystalSuperCharge = true;
+        // Gold Odin Legs Abilities
+        [ConfigField(text: "Gold Odin Legs Jump Up One Elevation")]
+        public bool GoldOdinLegsJumpElevation = true;
+        [ConfigField(text: "Gold Odin Legs Shadowstep")]
+        public bool GoldOdinLegsShadowstep = true;
         
-        // Viking Armor Set
+        // Gold Banshee Helmet Abilities
+        [ConfigField(text: "Gold Banshee Helmet Night Vision")]
+        public bool GoldBansheeHelmetNightVision = true;
+        [ConfigField(text: "Gold Banshee Helmet Silent Echo")]
+        public bool GoldBansheeHelmetSilentEcho = true;
+        [ConfigField(text: "Gold Banshee Helmet Will Points Bonus")]
+        public int GoldBansheeHelmetWillPointsBonus = 4;
+        
+        // PR Banshee Helmet Abilities
+        [ConfigField(text: "PR Banshee Helmet Gunslinger")]
+        public bool PRBansheeHelmetGunslinger = true;
+        [ConfigField(text: "PR Banshee Helmet Will Points Bonus")]
+        public int PRBansheeHelmetWillPointsBonus = 4;
+        
+        // PR Banshee Legs Abilities
+        [ConfigField(text: "PR Banshee Legs Rocket Leap")]
+        public bool PRBansheeLegsRocketLeap = true;
+        [ConfigField(text: "PR Banshee Legs Landing Shock Absorption")]
+        public bool PRBansheeLegsShockAbsorption = true;
+        
+        // Gold Golem Body Armor Abilities
+        [ConfigField(text: "Gold Golem Body Heavy Armor Jet Jump")]
+        public bool GoldGolemBodyJetJump = true;
+        [ConfigField(text: "Gold Golem Body Heavy Lifter")]
+        public bool GoldGolemBodyHeavyLifter = true;
+        [ConfigField(text: "Gold Golem Body Demolition State")]
+        public bool GoldGolemBodyDemolitionState = true;
+        [ConfigField(text: "Gold Golem Body Heavy Weapons Expert")]
+        public bool GoldGolemBodyHeavyWeaponsExpert = true;
+        
+        // Gold Golem Legs Abilities
+        [ConfigField(text: "Gold Golem Legs Landing Shock Absorption")]
+        public bool GoldGolemLegsShockAbsorption = true;
+        
+        // Viking Body Armor Abilities
+        [ConfigField(text: "Viking Body Regeneration")]
+        public bool VikingBodyRegeneration = true;
+        [ConfigField(text: "Viking Body Fire Resistance")]
+        public bool VikingBodyFireResistance = true;
+        [ConfigField(text: "Viking Body Living Crystal Supercharge")]
+        public bool VikingBodyCrystalSupercharge = true;
+        
+        // Viking Armor Set Stats
         
         /// Viking Helmet
         public float VikingHelmetArmor = 30f;
@@ -243,14 +265,6 @@ namespace ConfigurePromotionalArmourStats
         public float VikingHelmetAccuracy = 0f;
         public int VikingHelmetWeight = 1;
         
-        /// Viking Helmet - Daze Immunity
-        [ConfigField(text: "Viking Helmet Daze Immunity")]
-        public bool VikingHelmetDazeImmunity = true;
-        
-        /// NW Phlegethon Helmet - Mind Control Immunity
-        [ConfigField(text: "NWPhlegethon Helmet Mind Control Immunity")]
-        public bool NWPhlegethonHelmetMindControlImmunity = true;
-        
         /// Viking Body
         public float VikingBodyArmor = 34f;
         public float VikingBodySpeed = 2f;
@@ -261,14 +275,6 @@ namespace ConfigurePromotionalArmourStats
         public float VikingBodyAccuracy = 0f;
         public int VikingBodyWeight = 3;
         
-        /// Viking Body - Regenerate Ability
-        [ConfigField(text: "Viking Body Regenerate")]
-        public bool VikingBodyRegenerate = true;
-        
-        /// Viking Body - Fire Resistance
-        [ConfigField(text: "Viking Body Fire Resistance")]
-        public bool VikingBodyFireResistance = true;
-        
         /// Viking Legs
         public float VikingLegArmor = 30f;
         public float VikingLegSpeed = 4f;
@@ -278,14 +284,6 @@ namespace ConfigurePromotionalArmourStats
         [ConfigField(text: "Viking Leg Accuracy (in %)")]
         public float VikingLegAccuracy = 0f;
         public int VikingLegWeight = 2;
-        
-        /// Viking Legs - Goo Immunity
-        [ConfigField(text: "Viking Legs Goo Immunity")]
-        public bool VikingLegsGooImmunity = true;
-        
-        /// Viking Legs - Jump Ability
-        [ConfigField(text: "Viking Legs Jump")]
-        public bool VikingLegsJump = true;
 
     }
 
