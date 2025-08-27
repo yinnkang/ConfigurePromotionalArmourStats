@@ -603,7 +603,7 @@ namespace ConfigurePromotionalArmourStats
             // NEW: Add Melee Weapon Proficiency from Vengeance Torso Augmentation
             if (Config.GoldOdinBodyMeleeWeaponProficiency)
             {
-                var meleeWeaponProficiencyAbility = repo.GetAllDefs<PassiveModifierAbilityDef>().FirstOrDefault(a => a.name.Equals("MeleeWeapons_AbilityDef"));
+                var meleeWeaponProficiencyAbility = repo.GetAllDefs<AbilityDef>().FirstOrDefault(a => a.name.Equals("MeleeWeaponTalent_AbilityDef"));
                 if (meleeWeaponProficiencyAbility != null)
                 {
                     goldOdinBodyAbilities.Add(meleeWeaponProficiencyAbility);
@@ -611,7 +611,7 @@ namespace ConfigurePromotionalArmourStats
                 }
                 else
                 {
-                    Logger.LogWarning("[ConfigurePromotionalArmourStats] Could not find MeleeWeapons_AbilityDef");
+                    Logger.LogWarning("[ConfigurePromotionalArmourStats] Could not find MeleeWeaponTalent_AbilityDef");
                 }
             }
             if (GoldOdinBodyItem != null)
