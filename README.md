@@ -1,65 +1,44 @@
-# Configure Promotional Armor Stats
+# ConfigurePromotionalArmourStats
 
-A Phoenix Point mod that allows configuration of statistics for promotional armor pieces through the mod settings interface.
+Phoenix Point mod for configuring promotional armor stats and abilities with full customization options.
 
-## Supported Armor Sets
+## Armor Sets
 
-### Available Promotional Armor
-- **Gold Odin Set** (Assault class): Helmet, Body, Legs
-- **Gold Golem Set** (Heavy class): Helmet, Body, Legs  
-- **Gold Banshee Set** (Sniper class): Helmet, Body, Legs
-- **Phoenix Rising Banshee Set**: Helmet, Body, Legs
-- **New World Phlegethon Set**: Helmet, Body, Legs
-- **Viking Berserker Set**: Helmet, Body, Legs (multiple leg pieces)
-
-## Configurable Statistics
-
-Each armor piece can have the following values modified:
-
-### Basic Stats
-- **Armor Rating**: Damage reduction provided by the piece
-- **Speed Modifier**: Movement speed change (positive or negative)
-- **Perception**: Detection and awareness bonuses
-- **Stealth**: Concealment rating (percentage)
-- **Accuracy**: Weapon precision modifier (percentage)  
-- **Weight**: Equipment weight affecting movement
-
-## Installation
-
-1. Extract the mod to your Phoenix Point Mods directory
-2. Enable "Configure Promotional Armor Stats" in the Mods menu
-3. Configure desired armor values in the mod settings
-4. Changes apply to equipped armor pieces
+- **Gold Odin** (Assault) - Mind Control Immunity, Poison Resistant, Combat Matrix, Fire Resistant, Melee Proficiency, Jump, Shadowstep, +5 Strength
+- **Gold Golem** (Heavy) - Jet Jump, Heavy Lifter, Demolition State, Heavy Weapons Expert, **Armor Buff** (configurable AP/WP/value)
+- **Gold Banshee** (Sniper) - **Gunslinger** (configurable AP/WP), Rocket Leap, Landing Absorption, +4 Will Points  
+- **PR Banshee** - Night Vision, Silent Echo, +4 Will Points
+- **NW Phlegethon** - Instill Frenzy, Virus Resistant, Radiant Hope, Goo Immunity, +5 Will Points
+- **Viking** - Regeneration, Fire Resistance, Crystal Supercharge
 
 ## Configuration
 
-Access configuration through the in-game mod settings menu. Each armor piece has individual sliders/inputs for:
+### Stats (per armor piece)
+- Armor, Speed, Perception, Stealth %, Accuracy %, Weight
+- Jet Jump fumble % (Gold Golem Body only)
 
-- Armor rating values
-- Speed penalties/bonuses
-- Perception bonuses
-- Stealth percentages
-- Accuracy percentages
-- Weight values
+### Abilities 
+- **Armor Buff**: AP Cost (1-4), WP Cost, Armor Value (Gold Golem Body)
+- **Gunslinger**: AP Cost (0-4), WP Cost (Gold Banshee Helmet)
+- All other abilities: Enable/disable toggles
 
-Default values match the original game statistics.
+### Usage
+1. Enable mod in Phoenix Point Mods menu
+2. Configure values in mod settings (main menu only)
+3. Changes apply immediately to all armor pieces
 
-## Technical Notes
+## Technical Details
 
-- Changes apply to armor definitions when the mod loads
-- Mod can be safely enabled/disabled during campaigns
-- Original values are restored when the mod is disabled
-- Uses Phoenix Point's DefRepository system for armor modification
+- Modifies promotional armor TacticalItemDefs directly
+- Creates custom abilities: `BonusArmor2_AbilityDef`, `Custom_Gunslinger_AbilityDef`
+- Uses existing game abilities where possible
+- AP costs convert: User input (1-4) → Game format (0.25-1.0)
+- Safe to enable/disable mid-campaign
 
-## Build Instructions
+## Installation
 
-1. Ensure ModSDK is available in the parent directory
-2. Build using Visual Studio or MSBuild
-3. Output will be in the Dist directory
-4. Copy Dist contents to Phoenix Point Mods folder
+Extract to `Documents/My Games/Phoenix Point/Mods/` directory.
 
-## Compatibility
+## Build
 
-- Compatible with other armor modification mods
-- Can be enabled/disabled mid-campaign
-- Preserves original armor values when disabled
+Requires ModSDK in parent directory. Output in `Dist/` folder.
