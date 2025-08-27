@@ -77,6 +77,9 @@ namespace ConfigurePromotionalArmourStats
             DefaultPRBansheeHelmetValues, DefaultPRBansheeBodyValues, DefaultPRBansheeLegValues,
             DefaultNWPhlegethonHelmetValues, DefaultNWPhlegethonBodyValues, DefaultNWPhlegethonLegValues,
             DefaultVikingHelmetValues, DefaultVikingBodyValues, DefaultVikingLegValues, DefaultVikingRightLegValues, DefaultVikingMainLegsValues;
+            
+        // Store original BodyPartAspectDef values for restoration
+        private float OriginalNWHelmetWillPower, OriginalGoldBansheeHelmetWillPower, OriginalPRBansheeHelmetWillPower, OriginalGoldOdinBodyEndurance;
 
         /// <summary>
         /// Callback for when mod is enabled. Called even on game starup.
@@ -169,6 +172,16 @@ namespace ConfigurePromotionalArmourStats
             DefaultVikingRightLegValues = getArmorValuesFromArmorDef(VikingRightLegItem);
             DefaultVikingMainLegsValues = getArmorValuesFromArmorDef(VikingMainLegsItem);
 
+            // Store original BodyPartAspectDef values for stat bonuses
+            if (NWPhlegethonHelmetItem?.BodyPartAspectDef != null)
+                OriginalNWHelmetWillPower = NWPhlegethonHelmetItem.BodyPartAspectDef.WillPower;
+            if (GoldBansheeHelmetItem?.BodyPartAspectDef != null)
+                OriginalGoldBansheeHelmetWillPower = GoldBansheeHelmetItem.BodyPartAspectDef.WillPower;
+            if (PRBansheeHelmetItem?.BodyPartAspectDef != null)
+                OriginalPRBansheeHelmetWillPower = PRBansheeHelmetItem.BodyPartAspectDef.WillPower;
+            if (GoldOdinBodyItem?.BodyPartAspectDef != null)
+                OriginalGoldOdinBodyEndurance = GoldOdinBodyItem.BodyPartAspectDef.Endurance;
+
             OnConfigChanged();
             Logger.LogInfo("[ConfigurePromotionalArmourStats] OnModEnabled completed.");
         }
@@ -199,6 +212,16 @@ namespace ConfigurePromotionalArmourStats
             setDefsFromArmorValues(DefaultVikingLegValues, VikingLegItem);
             setDefsFromArmorValues(DefaultVikingRightLegValues, VikingRightLegItem);
             setDefsFromArmorValues(DefaultVikingMainLegsValues, VikingMainLegsItem);
+
+            // Restore original BodyPartAspectDef stat values
+            if (NWPhlegethonHelmetItem?.BodyPartAspectDef != null)
+                NWPhlegethonHelmetItem.BodyPartAspectDef.WillPower = OriginalNWHelmetWillPower;
+            if (GoldBansheeHelmetItem?.BodyPartAspectDef != null)
+                GoldBansheeHelmetItem.BodyPartAspectDef.WillPower = OriginalGoldBansheeHelmetWillPower;
+            if (PRBansheeHelmetItem?.BodyPartAspectDef != null)
+                PRBansheeHelmetItem.BodyPartAspectDef.WillPower = OriginalPRBansheeHelmetWillPower;
+            if (GoldOdinBodyItem?.BodyPartAspectDef != null)
+                GoldOdinBodyItem.BodyPartAspectDef.Endurance = OriginalGoldOdinBodyEndurance;
 
             // Remove all added abilities when mod is disabled
             RemoveAllAddedAbilities();
@@ -475,7 +498,9 @@ namespace ConfigurePromotionalArmourStats
             // Create configurable abilities that worked in previous version
             CreateArmorBuffAbility();
             CreateGunslingerAbility();
-            CreateStatBonusAbilities(repo);
+            
+            // Apply stat bonuses directly to BodyPartAspectDef
+            ApplyStatBonuses();
             
             // Assign abilities to armor pieces using existing game abilities when possible
             AssignAbilitiesToArmor(repo);
@@ -991,196 +1016,37 @@ namespace ConfigurePromotionalArmourStats
         }
 
         /// <summary>
-        /// Create stat bonus abilities for armor pieces based on config
+        /// Apply stat bonuses directly to BodyPartAspectDef (like TFTV does)
         /// </summary>
-        private void CreateStatBonusAbilities(DefRepository repo)
+        private void ApplyStatBonuses()
         {
-            // Create Will Points bonus abilities for helmets
-            if (Config.NWHelmetWillPointsBonus != 0)
+            // Apply Will Points bonuses directly to BodyPartAspectDef
+            if (NWPhlegethonHelmetItem?.BodyPartAspectDef != null && Config.NWHelmetWillPointsBonus != 0)
             {
-                CreateWillPointBonusAbility(NWPhlegethonHelmetItem, "NWHelmet_WillBonus", Config.NWHelmetWillPointsBonus);
-            }
-            if (Config.GoldBansheeHelmetWillPointsBonus != 0)
-            {
-                CreateWillPointBonusAbility(GoldBansheeHelmetItem, "GoldBansheeHelmet_WillBonus", Config.GoldBansheeHelmetWillPointsBonus);
-            }
-            if (Config.PRBansheeHelmetWillPointsBonus != 0)
-            {
-                CreateWillPointBonusAbility(PRBansheeHelmetItem, "PRBansheeHelmet_WillBonus", Config.PRBansheeHelmetWillPointsBonus);
+                NWPhlegethonHelmetItem.BodyPartAspectDef.WillPower = Config.NWHelmetWillPointsBonus;
+                Logger.LogInfo($"[ConfigurePromotionalArmourStats] Applied +{Config.NWHelmetWillPointsBonus} Will Points to NW Phlegethon Helmet");
             }
             
-            // Create Strength bonus ability for Gold Odin Body
-            if (Config.GoldOdinBodyStrengthBonus != 0)
+            if (GoldBansheeHelmetItem?.BodyPartAspectDef != null && Config.GoldBansheeHelmetWillPointsBonus != 0)
             {
-                CreateStrengthBonusAbility(GoldOdinBodyItem, "GoldOdinBody_StrengthBonus", Config.GoldOdinBodyStrengthBonus);
+                GoldBansheeHelmetItem.BodyPartAspectDef.WillPower = Config.GoldBansheeHelmetWillPointsBonus;
+                Logger.LogInfo($"[ConfigurePromotionalArmourStats] Applied +{Config.GoldBansheeHelmetWillPointsBonus} Will Points to Gold Banshee Helmet");
+            }
+            
+            if (PRBansheeHelmetItem?.BodyPartAspectDef != null && Config.PRBansheeHelmetWillPointsBonus != 0)
+            {
+                PRBansheeHelmetItem.BodyPartAspectDef.WillPower = Config.PRBansheeHelmetWillPointsBonus;
+                Logger.LogInfo($"[ConfigurePromotionalArmourStats] Applied +{Config.PRBansheeHelmetWillPointsBonus} Will Points to PR Banshee Helmet");
+            }
+            
+            // Apply Strength bonus directly to BodyPartAspectDef (Strength is stored as Endurance in the game)
+            if (GoldOdinBodyItem?.BodyPartAspectDef != null && Config.GoldOdinBodyStrengthBonus != 0)
+            {
+                GoldOdinBodyItem.BodyPartAspectDef.Endurance = Config.GoldOdinBodyStrengthBonus;
+                Logger.LogInfo($"[ConfigurePromotionalArmourStats] Applied +{Config.GoldOdinBodyStrengthBonus} Strength to Gold Odin Body");
             }
         }
 
-        /// <summary>
-        /// Create a Will Points bonus ability for armor piece
-        /// </summary>
-        private void CreateWillPointBonusAbility(TacticalItemDef armorItem, string abilityName, int willBonus)
-        {
-            if (armorItem == null) return;
-            
-            var repo = GameUtl.GameComponent<DefRepository>();
-            
-            // Check if already created
-            var existing = repo.GetAllDefs<PassiveModifierAbilityDef>().FirstOrDefault(a => a.name.Equals($"{abilityName}_AbilityDef"));
-            if (existing != null) 
-            {
-                // Add existing ability to armor
-                var currentAbilities = armorItem.Abilities?.ToList() ?? new List<AbilityDef>();
-                if (!currentAbilities.Contains(existing))
-                {
-                    currentAbilities.Add(existing);
-                    armorItem.Abilities = currentAbilities.ToArray();
-                }
-                return;
-            }
-            
-            // Use EditPersonalPerkStats approach for stat modifications
-            var sourceAbility = repo.GetAllDefs<PassiveModifierAbilityDef>().FirstOrDefault(a => a.name.Equals("Resourceful_AbilityDef"));
-            if (sourceAbility == null)
-            {
-                // Fallback to any PassiveModifierAbilityDef with StatModifications
-                sourceAbility = repo.GetAllDefs<PassiveModifierAbilityDef>().FirstOrDefault(a => a.StatModifications?.Length > 0);
-                if (sourceAbility == null) 
-                {
-                    Logger.LogWarning($"[ConfigurePromotionalArmourStats] Could not find source ability for {abilityName}");
-                    return;
-                }
-            }
-            
-            try
-            {
-                var willBonusAbility = Helper.CreateDefFromClone(
-                    sourceAbility,
-                    System.Guid.NewGuid().ToString(),
-                    $"{abilityName}_AbilityDef");
-                
-                if (willBonusAbility == null) 
-                {
-                    Logger.LogWarning($"[ConfigurePromotionalArmourStats] Failed to create {abilityName}");
-                    return;
-                }
-                
-                // Configure will point bonus using StatModifications (like EditPersonalPerkStats does)
-                willBonusAbility.StatModifications = new ItemStatModification[]
-                {
-                    new ItemStatModification()
-                    {
-                        TargetStat = StatModificationTarget.Willpower,
-                        Modification = StatModificationType.Add,
-                        Value = willBonus
-                    },
-                    new ItemStatModification()
-                    {
-                        TargetStat = StatModificationTarget.Willpower,
-                        Modification = StatModificationType.AddMax,
-                        Value = willBonus
-                    }
-                };
-                
-                // Clear other modifications from source ability
-                willBonusAbility.ItemTagStatModifications = new EquipmentItemTagStatModification[0];
-                willBonusAbility.DamageKeywordPairs = new DamageKeywordPair[0];
-                
-                // Add to armor abilities
-                var currentAbilities = armorItem.Abilities?.ToList() ?? new List<AbilityDef>();
-                currentAbilities.Add(willBonusAbility);
-                armorItem.Abilities = currentAbilities.ToArray();
-                
-                Logger.LogInfo($"[ConfigurePromotionalArmourStats] Created Will Points bonus ability (+{willBonus}) for {armorItem.name}");
-            }
-            catch (System.Exception e)
-            {
-                Logger.LogError($"[ConfigurePromotionalArmourStats] Error creating {abilityName}: {e.Message}");
-            }
-        }
-
-        /// <summary>
-        /// Create a Strength bonus ability for armor piece
-        /// </summary>
-        private void CreateStrengthBonusAbility(TacticalItemDef armorItem, string abilityName, int strengthBonus)
-        {
-            if (armorItem == null) return;
-            
-            var repo = GameUtl.GameComponent<DefRepository>();
-            
-            // Check if already created
-            var existing = repo.GetAllDefs<PassiveModifierAbilityDef>().FirstOrDefault(a => a.name.Equals($"{abilityName}_AbilityDef"));
-            if (existing != null) 
-            {
-                // Add existing ability to armor
-                var currentAbilities = armorItem.Abilities?.ToList() ?? new List<AbilityDef>();
-                if (!currentAbilities.Contains(existing))
-                {
-                    currentAbilities.Add(existing);
-                    armorItem.Abilities = currentAbilities.ToArray();
-                }
-                return;
-            }
-            
-            // Use EditPersonalPerkStats approach for stat modifications
-            var sourceAbility = repo.GetAllDefs<PassiveModifierAbilityDef>().FirstOrDefault(a => a.name.Equals("Resourceful_AbilityDef"));
-            if (sourceAbility == null)
-            {
-                // Fallback to any PassiveModifierAbilityDef with StatModifications
-                sourceAbility = repo.GetAllDefs<PassiveModifierAbilityDef>().FirstOrDefault(a => a.StatModifications?.Length > 0);
-                if (sourceAbility == null) 
-                {
-                    Logger.LogWarning($"[ConfigurePromotionalArmourStats] Could not find source ability for {abilityName}");
-                    return;
-                }
-            }
-            
-            try
-            {
-                var strengthBonusAbility = Helper.CreateDefFromClone(
-                    sourceAbility,
-                    System.Guid.NewGuid().ToString(),
-                    $"{abilityName}_AbilityDef");
-                
-                if (strengthBonusAbility == null) 
-                {
-                    Logger.LogWarning($"[ConfigurePromotionalArmourStats] Failed to create {abilityName}");
-                    return;
-                }
-                
-                // Configure strength bonus using StatModifications (like EditPersonalPerkStats does)
-                strengthBonusAbility.StatModifications = new ItemStatModification[]
-                {
-                    new ItemStatModification()
-                    {
-                        TargetStat = StatModificationTarget.Endurance,
-                        Modification = StatModificationType.Add,
-                        Value = strengthBonus
-                    },
-                    new ItemStatModification()
-                    {
-                        TargetStat = StatModificationTarget.Endurance,
-                        Modification = StatModificationType.AddMax,
-                        Value = strengthBonus
-                    }
-                };
-                
-                // Clear other modifications from source ability
-                strengthBonusAbility.ItemTagStatModifications = new EquipmentItemTagStatModification[0];
-                strengthBonusAbility.DamageKeywordPairs = new DamageKeywordPair[0];
-                
-                // Add to armor abilities
-                var currentAbilities = armorItem.Abilities?.ToList() ?? new List<AbilityDef>();
-                currentAbilities.Add(strengthBonusAbility);
-                armorItem.Abilities = currentAbilities.ToArray();
-                
-                Logger.LogInfo($"[ConfigurePromotionalArmourStats] Created Strength bonus ability (+{strengthBonus}) for {armorItem.name}");
-            }
-            catch (System.Exception e)
-            {
-                Logger.LogError($"[ConfigurePromotionalArmourStats] Error creating {abilityName}: {e.Message}");
-            }
-        }
 
         /// <summary>
         /// Remove all added abilities when mod is disabled
