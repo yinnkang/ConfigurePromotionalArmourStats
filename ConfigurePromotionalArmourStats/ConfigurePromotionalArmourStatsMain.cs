@@ -711,7 +711,7 @@ namespace ConfigurePromotionalArmourStats
             if (GoldBansheeLegItem != null)
                 GoldBansheeLegItem.Abilities = goldBansheeLegsAbilities.ToArray();
             
-            // GOLD GOLEM BODY ARMOR: Heavy Body Armor Jet Jump, Heavy Lifter, Demolition State, Heavy Weapons Expert
+            // GOLD GOLEM BODY ARMOR: Heavy Body Armor Jet Jump, Heavy Lifter, Demolition State, Heavy Weapons Expert, Armor Buff
             var goldGolemBodyAbilities = new List<AbilityDef>();
             if (Config.GoldGolemBodyJetJump)
             {
@@ -748,6 +748,14 @@ namespace ConfigurePromotionalArmourStats
                 if (heavyWeaponsExpertAbility != null)
                 {
                     goldGolemBodyAbilities.Add(heavyWeaponsExpertAbility);
+                }
+            }
+            if (Config.GoldGolemBodyArmorBuff)
+            {
+                var armorBuffAbility = repo.GetAllDefs<AbilityDef>().FirstOrDefault(a => a.name.Equals("BonusArmor2_AbilityDef"));
+                if (armorBuffAbility != null)
+                {
+                    goldGolemBodyAbilities.Add(armorBuffAbility);
                 }
             }
             if (GoldGolemBodyItem != null)

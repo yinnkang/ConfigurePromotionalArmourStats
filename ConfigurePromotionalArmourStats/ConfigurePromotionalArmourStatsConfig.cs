@@ -109,6 +109,8 @@ namespace ConfigurePromotionalArmourStats
         public bool GoldGolemBodyDemolitionState = true;
         [ConfigField(text: "Gold Golem Body Heavy Weapons Expert")]
         public bool GoldGolemBodyHeavyWeaponsExpert = true;
+        [ConfigField(text: "Gold Golem Body Armor Buff")]
+        public bool GoldGolemBodyArmorBuff = true;
 
         // Gold Golem Legs - Stats
         public float GoldGolemLegArmor = 35f;
