@@ -1024,7 +1024,7 @@ namespace ConfigurePromotionalArmourStats
         }
 
         /// <summary>
-        /// Create a stat bonus ability and add it to armor piece
+        /// Create a stat bonus ability and add it to armor piece using Helper.CreateDefFromClone
         /// </summary>
         private void CreateAndAddStatBonusAbility(TacticalItemDef armorItem, string abilityName, int bonus, StatModificationTarget targetStat, DefRepository repo)
         {
@@ -1032,9 +1032,45 @@ namespace ConfigurePromotionalArmourStats
             
             try
             {
-                // Create a new PassiveModifierAbilityDef
-                var statBonusAbility = ScriptableObject.CreateInstance<PassiveModifierAbilityDef>();
-                statBonusAbility.name = $"{abilityName}_AbilityDef";
+                // Check if already created to avoid duplicates
+                var existingAbility = repo.GetAllDefs<PassiveModifierAbilityDef>().FirstOrDefault(a => a.name.Equals($"{abilityName}_AbilityDef"));
+                if (existingAbility != null)
+                {
+                    // Add existing ability to armor
+                    var existingAbilities = armorItem.Abilities?.ToList() ?? new List<AbilityDef>();
+                    if (!existingAbilities.Contains(existingAbility))
+                    {
+                        existingAbilities.Add(existingAbility);
+                        armorItem.Abilities = existingAbilities.ToArray();
+                    }
+                    return;
+                }
+                
+                // Get a source PassiveModifierAbilityDef to clone from (Resourceful works well)
+                var sourceAbility = repo.GetAllDefs<PassiveModifierAbilityDef>().FirstOrDefault(a => a.name.Equals("Resourceful_AbilityDef"));
+                if (sourceAbility == null)
+                {
+                    // Fallback to any PassiveModifierAbilityDef with StatModifications
+                    sourceAbility = repo.GetAllDefs<PassiveModifierAbilityDef>().FirstOrDefault(a => a.StatModifications?.Length > 0);
+                    if (sourceAbility == null)
+                    {
+                        Logger.LogWarning($"[ConfigurePromotionalArmourStats] Could not find source ability for {abilityName}");
+                        return;
+                    }
+                }
+                
+                // Create a new ability using Helper.CreateDefFromClone for proper DefRepository registration
+                var statBonusAbility = Helper.CreateDefFromClone(
+                    sourceAbility,
+                    System.Guid.NewGuid().ToString(),
+                    $"{abilityName}_AbilityDef"
+                );
+                
+                if (statBonusAbility == null)
+                {
+                    Logger.LogWarning($"[ConfigurePromotionalArmourStats] Failed to create {abilityName}");
+                    return;
+                }
                 
                 // Set up StatModifications like TFTV does
                 statBonusAbility.StatModifications = new ItemStatModification[]
@@ -1057,10 +1093,17 @@ namespace ConfigurePromotionalArmourStats
                 statBonusAbility.ItemTagStatModifications = new EquipmentItemTagStatModification[0];
                 statBonusAbility.DamageKeywordPairs = new DamageKeywordPair[0];
                 
-                // Configure basic ability properties
+                // Configure basic ability properties like the source
                 statBonusAbility.Active = false;
-                statBonusAbility.UsesPerTurn = 1;
+                statBonusAbility.UsesPerTurn = -1;
                 statBonusAbility.EndsTurn = false;
+                
+                // Set up ViewElementDef for proper display
+                if (statBonusAbility.ViewElementDef != null)
+                {
+                    statBonusAbility.ViewElementDef.DisplayName1 = new LocalizedTextBind($"{targetStat} +{bonus}", true);
+                    statBonusAbility.ViewElementDef.Description = new LocalizedTextBind($"+{bonus} {targetStat}", true);
+                }
                 
                 // Add to armor abilities
                 var currentAbilities = armorItem.Abilities?.ToList() ?? new List<AbilityDef>();
