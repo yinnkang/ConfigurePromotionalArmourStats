@@ -78,8 +78,6 @@ namespace ConfigurePromotionalArmourStats
             DefaultNWPhlegethonHelmetValues, DefaultNWPhlegethonBodyValues, DefaultNWPhlegethonLegValues,
             DefaultVikingHelmetValues, DefaultVikingBodyValues, DefaultVikingLegValues, DefaultVikingRightLegValues, DefaultVikingMainLegsValues;
             
-        // Store original BodyPartAspectDef values for restoration
-        private float OriginalNWHelmetWillPower, OriginalGoldBansheeHelmetWillPower, OriginalPRBansheeHelmetWillPower, OriginalGoldOdinBodyEndurance;
 
         /// <summary>
         /// Callback for when mod is enabled. Called even on game starup.
@@ -172,15 +170,6 @@ namespace ConfigurePromotionalArmourStats
             DefaultVikingRightLegValues = getArmorValuesFromArmorDef(VikingRightLegItem);
             DefaultVikingMainLegsValues = getArmorValuesFromArmorDef(VikingMainLegsItem);
 
-            // Store original BodyPartAspectDef values for stat bonuses
-            if (NWPhlegethonHelmetItem?.BodyPartAspectDef != null)
-                OriginalNWHelmetWillPower = NWPhlegethonHelmetItem.BodyPartAspectDef.WillPower;
-            if (GoldBansheeHelmetItem?.BodyPartAspectDef != null)
-                OriginalGoldBansheeHelmetWillPower = GoldBansheeHelmetItem.BodyPartAspectDef.WillPower;
-            if (PRBansheeHelmetItem?.BodyPartAspectDef != null)
-                OriginalPRBansheeHelmetWillPower = PRBansheeHelmetItem.BodyPartAspectDef.WillPower;
-            if (GoldOdinBodyItem?.BodyPartAspectDef != null)
-                OriginalGoldOdinBodyEndurance = GoldOdinBodyItem.BodyPartAspectDef.Endurance;
 
             OnConfigChanged();
             Logger.LogInfo("[ConfigurePromotionalArmourStats] OnModEnabled completed.");
@@ -213,15 +202,6 @@ namespace ConfigurePromotionalArmourStats
             setDefsFromArmorValues(DefaultVikingRightLegValues, VikingRightLegItem);
             setDefsFromArmorValues(DefaultVikingMainLegsValues, VikingMainLegsItem);
 
-            // Restore original BodyPartAspectDef stat values
-            if (NWPhlegethonHelmetItem?.BodyPartAspectDef != null)
-                NWPhlegethonHelmetItem.BodyPartAspectDef.WillPower = OriginalNWHelmetWillPower;
-            if (GoldBansheeHelmetItem?.BodyPartAspectDef != null)
-                GoldBansheeHelmetItem.BodyPartAspectDef.WillPower = OriginalGoldBansheeHelmetWillPower;
-            if (PRBansheeHelmetItem?.BodyPartAspectDef != null)
-                PRBansheeHelmetItem.BodyPartAspectDef.WillPower = OriginalPRBansheeHelmetWillPower;
-            if (GoldOdinBodyItem?.BodyPartAspectDef != null)
-                GoldOdinBodyItem.BodyPartAspectDef.Endurance = OriginalGoldOdinBodyEndurance;
 
             // Remove all added abilities when mod is disabled
             RemoveAllAddedAbilities();
@@ -499,8 +479,8 @@ namespace ConfigurePromotionalArmourStats
             CreateArmorBuffAbility();
             CreateGunslingerAbility();
             
-            // Apply stat bonuses directly to BodyPartAspectDef
-            ApplyStatBonuses();
+            // Create and add stat bonus abilities to armor pieces
+            CreateAndAddStatBonusAbilities();
             
             // Assign abilities to armor pieces using existing game abilities when possible
             AssignAbilitiesToArmor(repo);
@@ -1016,34 +996,82 @@ namespace ConfigurePromotionalArmourStats
         }
 
         /// <summary>
-        /// Apply stat bonuses directly to BodyPartAspectDef (like TFTV does)
+        /// Create and add stat bonus abilities to armor pieces
         /// </summary>
-        private void ApplyStatBonuses()
+        private void CreateAndAddStatBonusAbilities()
         {
-            // Apply Will Points bonuses directly to BodyPartAspectDef
-            if (NWPhlegethonHelmetItem?.BodyPartAspectDef != null && Config.NWHelmetWillPointsBonus != 0)
+            var repo = GameUtl.GameComponent<DefRepository>();
+            
+            // Will Points bonuses for helmets
+            if (Config.NWHelmetWillPointsBonus != 0)
             {
-                NWPhlegethonHelmetItem.BodyPartAspectDef.WillPower = Config.NWHelmetWillPointsBonus;
-                Logger.LogInfo($"[ConfigurePromotionalArmourStats] Applied +{Config.NWHelmetWillPointsBonus} Will Points to NW Phlegethon Helmet");
+                CreateAndAddStatBonusAbility(NWPhlegethonHelmetItem, "NWHelmet_WillBonus", Config.NWHelmetWillPointsBonus, StatModificationTarget.Willpower, repo);
+            }
+            if (Config.GoldBansheeHelmetWillPointsBonus != 0)
+            {
+                CreateAndAddStatBonusAbility(GoldBansheeHelmetItem, "GoldBansheeHelmet_WillBonus", Config.GoldBansheeHelmetWillPointsBonus, StatModificationTarget.Willpower, repo);
+            }
+            if (Config.PRBansheeHelmetWillPointsBonus != 0)
+            {
+                CreateAndAddStatBonusAbility(PRBansheeHelmetItem, "PRBansheeHelmet_WillBonus", Config.PRBansheeHelmetWillPointsBonus, StatModificationTarget.Willpower, repo);
             }
             
-            if (GoldBansheeHelmetItem?.BodyPartAspectDef != null && Config.GoldBansheeHelmetWillPointsBonus != 0)
+            // Strength bonus for Gold Odin Body
+            if (Config.GoldOdinBodyStrengthBonus != 0)
             {
-                GoldBansheeHelmetItem.BodyPartAspectDef.WillPower = Config.GoldBansheeHelmetWillPointsBonus;
-                Logger.LogInfo($"[ConfigurePromotionalArmourStats] Applied +{Config.GoldBansheeHelmetWillPointsBonus} Will Points to Gold Banshee Helmet");
+                CreateAndAddStatBonusAbility(GoldOdinBodyItem, "GoldOdinBody_StrengthBonus", Config.GoldOdinBodyStrengthBonus, StatModificationTarget.Endurance, repo);
             }
+        }
+
+        /// <summary>
+        /// Create a stat bonus ability and add it to armor piece
+        /// </summary>
+        private void CreateAndAddStatBonusAbility(TacticalItemDef armorItem, string abilityName, int bonus, StatModificationTarget targetStat, DefRepository repo)
+        {
+            if (armorItem == null || bonus == 0) return;
             
-            if (PRBansheeHelmetItem?.BodyPartAspectDef != null && Config.PRBansheeHelmetWillPointsBonus != 0)
+            try
             {
-                PRBansheeHelmetItem.BodyPartAspectDef.WillPower = Config.PRBansheeHelmetWillPointsBonus;
-                Logger.LogInfo($"[ConfigurePromotionalArmourStats] Applied +{Config.PRBansheeHelmetWillPointsBonus} Will Points to PR Banshee Helmet");
+                // Create a new PassiveModifierAbilityDef
+                var statBonusAbility = ScriptableObject.CreateInstance<PassiveModifierAbilityDef>();
+                statBonusAbility.name = $"{abilityName}_AbilityDef";
+                
+                // Set up StatModifications like TFTV does
+                statBonusAbility.StatModifications = new ItemStatModification[]
+                {
+                    new ItemStatModification
+                    {
+                        TargetStat = targetStat,
+                        Modification = StatModificationType.Add,
+                        Value = bonus
+                    },
+                    new ItemStatModification
+                    {
+                        TargetStat = targetStat,
+                        Modification = StatModificationType.AddMax,
+                        Value = bonus
+                    }
+                };
+                
+                // Clear other fields to ensure clean state
+                statBonusAbility.ItemTagStatModifications = new EquipmentItemTagStatModification[0];
+                statBonusAbility.DamageKeywordPairs = new DamageKeywordPair[0];
+                
+                // Configure basic ability properties
+                statBonusAbility.Active = false;
+                statBonusAbility.UsesPerTurn = 1;
+                statBonusAbility.EndsTurn = false;
+                
+                // Add to armor abilities
+                var currentAbilities = armorItem.Abilities?.ToList() ?? new List<AbilityDef>();
+                currentAbilities.Add(statBonusAbility);
+                armorItem.Abilities = currentAbilities.ToArray();
+                
+                Logger.LogInfo($"[ConfigurePromotionalArmourStats] Created and added {targetStat} bonus (+{bonus}) to {armorItem.name}");
             }
-            
-            // Apply Strength bonus directly to BodyPartAspectDef (Strength is stored as Endurance in the game)
-            if (GoldOdinBodyItem?.BodyPartAspectDef != null && Config.GoldOdinBodyStrengthBonus != 0)
+            catch (System.Exception e)
             {
-                GoldOdinBodyItem.BodyPartAspectDef.Endurance = Config.GoldOdinBodyStrengthBonus;
-                Logger.LogInfo($"[ConfigurePromotionalArmourStats] Applied +{Config.GoldOdinBodyStrengthBonus} Strength to Gold Odin Body");
+                Logger.LogError($"[ConfigurePromotionalArmourStats] Error creating {abilityName}: {e.Message}");
             }
         }
 
