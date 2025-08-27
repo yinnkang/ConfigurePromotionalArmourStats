@@ -902,13 +902,13 @@ namespace ConfigurePromotionalArmourStats
 
                 addarmourStatus.StatsModifications[0].Type = ItemSlotStatsModifyStatusDef.StatType.Armour;
                 addarmourStatus.StatsModifications[0].ModificationType = StatModificationType.Add;
-                addarmourStatus.StatsModifications[0].Value = 10f; // Fixed armor bonus
+                addarmourStatus.StatsModifications[0].Value = Config.ArmorBuffValue; // Configurable armor bonus
 
                 addarmour.ViewElementDef.DisplayName1 = new LocalizedTextBind("Armor Buff", true);
-                addarmour.ViewElementDef.Description = new LocalizedTextBind("Add +10 armor to allies for the duration of the mission", true);
+                addarmour.ViewElementDef.Description = new LocalizedTextBind($"Add +{Config.ArmorBuffValue} armor to allies for the duration of the mission", true);
                 addarmour.UsesPerTurn = 1;
-                addarmour.ActionPointCost = 0.25f; // 1 AP
-                addarmour.WillPointCost = 4;
+                addarmour.ActionPointCost = Config.ArmorBuffAPCost; // Configurable AP cost
+                addarmour.WillPointCost = Config.ArmorBuffWPCost; // Configurable WP cost
 
                 // Add to animation definitions exactly like SuperCheatsModPlus
                 foreach (TacActorSimpleAbilityAnimActionDef animActionDef in repo.GetAllDefs<TacActorSimpleAbilityAnimActionDef>().Where(aad => aad.name.Contains("Soldier_Utka_AnimActionsDef")))
@@ -967,11 +967,11 @@ namespace ConfigurePromotionalArmourStats
                     skillName);
                     
                 // Configure costs and effects
-                gunslingerAbility.ActionPointCost = 0f; // Free action
-                gunslingerAbility.WillPointCost = 0; // No will cost
+                gunslingerAbility.ActionPointCost = Config.GunslingerAPCost; // Configurable AP cost
+                gunslingerAbility.WillPointCost = Config.GunslingerWPCost; // Configurable WP cost
                 
                 gunslingerAbility.ViewElementDef.DisplayName1 = new LocalizedTextBind("Gunslinger", true);
-                gunslingerAbility.ViewElementDef.Description = new LocalizedTextBind("Gain additional shots this turn", true);
+                gunslingerAbility.ViewElementDef.Description = new LocalizedTextBind($"Gain additional shots this turn (AP: {Config.GunslingerAPCost}, WP: {Config.GunslingerWPCost})", true);
                 
                 // Add to animation definitions for proper animations
                 foreach (TacActorSimpleAbilityAnimActionDef animActionDef in repo.GetAllDefs<TacActorSimpleAbilityAnimActionDef>().Where(aad => aad.name.Contains("Soldier_Utka_AnimActionsDef")))
