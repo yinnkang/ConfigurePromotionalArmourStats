@@ -905,9 +905,9 @@ namespace ConfigurePromotionalArmourStats
                 addarmourStatus.StatsModifications[0].Value = Config.ArmorBuffValue; // Configurable armor bonus
 
                 addarmour.ViewElementDef.DisplayName1 = new LocalizedTextBind("Armor Buff", true);
-                addarmour.ViewElementDef.Description = new LocalizedTextBind($"Add +{Config.ArmorBuffValue} armor to allies for the duration of the mission", true);
+                addarmour.ViewElementDef.Description = new LocalizedTextBind($"Add +{Config.ArmorBuffValue} armor to allies for the duration of the mission (AP: {Config.ArmorBuffAPCost}, WP: {Config.ArmorBuffWPCost})", true);
                 addarmour.UsesPerTurn = 1;
-                addarmour.ActionPointCost = Config.ArmorBuffAPCost; // Configurable AP cost
+                addarmour.ActionPointCost = Config.ArmorBuffAPCost * 0.25f; // Convert 1-4 to 0.25-1.0 format
                 addarmour.WillPointCost = Config.ArmorBuffWPCost; // Configurable WP cost
 
                 // Add to animation definitions exactly like SuperCheatsModPlus
@@ -967,7 +967,7 @@ namespace ConfigurePromotionalArmourStats
                     skillName);
                     
                 // Configure costs and effects
-                gunslingerAbility.ActionPointCost = Config.GunslingerAPCost; // Configurable AP cost
+                gunslingerAbility.ActionPointCost = Config.GunslingerAPCost * 0.25f; // Convert 0-4 to 0.0-1.0 format
                 gunslingerAbility.WillPointCost = Config.GunslingerWPCost; // Configurable WP cost
                 
                 gunslingerAbility.ViewElementDef.DisplayName1 = new LocalizedTextBind("Gunslinger", true);

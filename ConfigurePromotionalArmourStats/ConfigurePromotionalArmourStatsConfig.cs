@@ -111,8 +111,8 @@ namespace ConfigurePromotionalArmourStats
         public bool GoldGolemBodyHeavyWeaponsExpert = true;
         [ConfigField(text: "Gold Golem Body Armor Buff")]
         public bool GoldGolemBodyArmorBuff = true;
-        [ConfigField(text: "Armor Buff AP Cost")]
-        public float ArmorBuffAPCost = 0.25f;
+        [ConfigField(text: "Armor Buff AP Cost (1-4)")]
+        public int ArmorBuffAPCost = 1;
         [ConfigField(text: "Armor Buff WP Cost")]
         public int ArmorBuffWPCost = 4;
         [ConfigField(text: "Armor Buff Value")]
@@ -153,8 +153,8 @@ namespace ConfigurePromotionalArmourStats
         // Gold Banshee Helmet - Abilities
         [ConfigField(text: "Gold Banshee Helmet Gunslinger")]
         public bool GoldBansheeHelmetGunslinger = true;
-        [ConfigField(text: "Gunslinger AP Cost")]
-        public float GunslingerAPCost = 0f;
+        [ConfigField(text: "Gunslinger AP Cost (0-4)")]
+        public int GunslingerAPCost = 0;
         [ConfigField(text: "Gunslinger WP Cost")]
         public int GunslingerWPCost = 0;
 
