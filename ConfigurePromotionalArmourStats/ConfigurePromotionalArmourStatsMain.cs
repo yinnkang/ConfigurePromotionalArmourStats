@@ -31,6 +31,8 @@ namespace ConfigurePromotionalArmourStats
     /// </summary>
     public class ConfigurePromotionalArmourStats : ModMain
     {
+        
+        
         /// <summary>
         /// defines the modifiable values for any given armor.
         /// </summary>
@@ -205,6 +207,7 @@ namespace ConfigurePromotionalArmourStats
 
             // Remove all added abilities when mod is disabled
             RemoveAllAddedAbilities();
+            
         }
 
         /// <summary>
@@ -566,14 +569,20 @@ namespace ConfigurePromotionalArmourStats
                 }
             }
             
-            // GOLD ODIN HELMET: Mind Control Immunity, Poison Resistant
+            // GOLD ODIN HELMET: Mind Control Immunity, Poison Resistant  
             var goldOdinHelmetAbilities = new List<AbilityDef>();
             if (Config.GoldOdinHelmetMindControlImmunity)
             {
-                var mindControlImmunityAbility = repo.GetAllDefs<AbilityDef>().FirstOrDefault(a => a.name.Equals("PsychicImmunity_DamageMultiplierAbilityDef"));
+                // Use the same Mind Control Immunity ability as the Clarity Head Augmentation
+                var mindControlImmunityAbility = repo.GetAllDefs<ApplyStatusAbilityDef>().FirstOrDefault(a => a.name.Equals("MindControlImmunity_AbilityDef"));
                 if (mindControlImmunityAbility != null)
                 {
                     goldOdinHelmetAbilities.Add(mindControlImmunityAbility);
+                    Logger.LogInfo("[ConfigurePromotionalArmourStats] Found and added Mind Control Immunity to Gold Odin Helmet");
+                }
+                else
+                {
+                    Logger.LogWarning("[ConfigurePromotionalArmourStats] Could not find MindControlImmunity_AbilityDef for mind control immunity");
                 }
             }
             if (Config.GoldOdinHelmetPoisonResistant)
@@ -622,14 +631,19 @@ namespace ConfigurePromotionalArmourStats
             if (GoldOdinBodyItem != null)
                 GoldOdinBodyItem.Abilities = goldOdinBodyAbilities.ToArray();
             
-            // GOLD ODIN LEGS: Can jump up one elevation, Shadowstep
+            // GOLD ODIN LEGS: Rocket Leap, Shadowstep
             var goldOdinLegsAbilities = new List<AbilityDef>();
             if (Config.GoldOdinLegsJumpElevation)
             {
-                var jumpAbility = repo.GetAllDefs<AddNavAreasAbilityDef>().FirstOrDefault(a => a.name.Equals("Humanoid_HighJump_AbilityDef"));
-                if (jumpAbility != null)
+                var rocketLeapAbility = repo.GetAllDefs<AbilityDef>().FirstOrDefault(a => a.name.Equals("Exo_Leap_AbilityDef"));
+                if (rocketLeapAbility != null)
                 {
-                    goldOdinLegsAbilities.Add(jumpAbility);
+                    goldOdinLegsAbilities.Add(rocketLeapAbility);
+                    Logger.LogInfo("[ConfigurePromotionalArmourStats] Found and added Rocket Leap to Gold Odin Legs");
+                }
+                else
+                {
+                    Logger.LogWarning("[ConfigurePromotionalArmourStats] Could not find Exo_Leap_AbilityDef for Rocket Leap on Gold Odin Legs");
                 }
             }
             if (Config.GoldOdinLegsShadowstep)
@@ -996,13 +1010,89 @@ namespace ConfigurePromotionalArmourStats
         }
 
         /// <summary>
-        /// Apply stat bonuses using Harmony patches instead of abilities (this approach should work)
+        /// Apply stat bonuses by modifying BodyPartAspectDef properties directly (like Judgement Head Mutation)
         /// </summary>
         private void ApplyStatBonusPatches()
         {
-            // The actual stat bonus application is handled by Harmony patches
-            // in the ConfigurePromotionalArmourStatsPatches.cs file
-            Logger.LogInfo("[ConfigurePromotionalArmourStats] Stat bonus patches will be applied via Harmony");
+            // Apply stat bonuses by modifying BodyPartAspectDef properties
+            ApplyGoldOdinBodyStrengthBonus();
+            ApplyGoldBansheeHelmetWillBonus();
+            ApplyPRBansheeHelmetWillBonus();
+            ApplyNWPhlegethonHelmetWillBonus();
+            
+            Logger.LogInfo("[ConfigurePromotionalArmourStats] Stat bonuses applied to armor BodyPartAspectDef properties");
+        }
+        
+        /// <summary>
+        /// Apply Gold Odin Body +Strength bonus by modifying BodyPartAspectDef.Endurance
+        /// </summary>
+        private void ApplyGoldOdinBodyStrengthBonus()
+        {
+            if (Config.GoldOdinBodyStrengthBonus == 0 || GoldOdinBodyItem?.BodyPartAspectDef == null) return;
+            
+            try
+            {
+                GoldOdinBodyItem.BodyPartAspectDef.Endurance = Config.GoldOdinBodyStrengthBonus;
+                Logger.LogInfo($"[ConfigurePromotionalArmourStats] Applied +{Config.GoldOdinBodyStrengthBonus} Strength to Gold Odin Body");
+            }
+            catch (System.Exception e)
+            {
+                Logger.LogError($"[ConfigurePromotionalArmourStats] Error applying Gold Odin Body strength bonus: {e.Message}");
+            }
+        }
+        
+        /// <summary>
+        /// Apply Gold Banshee Helmet +Will Points bonus by modifying BodyPartAspectDef.WillPower
+        /// </summary>
+        private void ApplyGoldBansheeHelmetWillBonus()
+        {
+            if (Config.GoldBansheeHelmetWillPointsBonus == 0 || GoldBansheeHelmetItem?.BodyPartAspectDef == null) return;
+            
+            try
+            {
+                GoldBansheeHelmetItem.BodyPartAspectDef.WillPower = Config.GoldBansheeHelmetWillPointsBonus;
+                Logger.LogInfo($"[ConfigurePromotionalArmourStats] Applied +{Config.GoldBansheeHelmetWillPointsBonus} Will Points to Gold Banshee Helmet");
+            }
+            catch (System.Exception e)
+            {
+                Logger.LogError($"[ConfigurePromotionalArmourStats] Error applying Gold Banshee Helmet will bonus: {e.Message}");
+            }
+        }
+        
+        /// <summary>
+        /// Apply PR Banshee Helmet +Will Points bonus by modifying BodyPartAspectDef.WillPower
+        /// </summary>
+        private void ApplyPRBansheeHelmetWillBonus()
+        {
+            if (Config.PRBansheeHelmetWillPointsBonus == 0 || PRBansheeHelmetItem?.BodyPartAspectDef == null) return;
+            
+            try
+            {
+                PRBansheeHelmetItem.BodyPartAspectDef.WillPower = Config.PRBansheeHelmetWillPointsBonus;
+                Logger.LogInfo($"[ConfigurePromotionalArmourStats] Applied +{Config.PRBansheeHelmetWillPointsBonus} Will Points to PR Banshee Helmet");
+            }
+            catch (System.Exception e)
+            {
+                Logger.LogError($"[ConfigurePromotionalArmourStats] Error applying PR Banshee Helmet will bonus: {e.Message}");
+            }
+        }
+        
+        /// <summary>
+        /// Apply NW Phlegethon Helmet +Will Points bonus by modifying BodyPartAspectDef.WillPower
+        /// </summary>
+        private void ApplyNWPhlegethonHelmetWillBonus()
+        {
+            if (Config.NWHelmetWillPointsBonus == 0 || NWPhlegethonHelmetItem?.BodyPartAspectDef == null) return;
+            
+            try
+            {
+                NWPhlegethonHelmetItem.BodyPartAspectDef.WillPower = Config.NWHelmetWillPointsBonus;
+                Logger.LogInfo($"[ConfigurePromotionalArmourStats] Applied +{Config.NWHelmetWillPointsBonus} Will Points to NW Phlegethon Helmet");
+            }
+            catch (System.Exception e)
+            {
+                Logger.LogError($"[ConfigurePromotionalArmourStats] Error applying NW Phlegethon Helmet will bonus: {e.Message}");
+            }
         }
 
 
